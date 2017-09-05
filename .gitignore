@@ -42,3 +42,4 @@ test
 
 *.o
 .depend
+.vscode/settings.json
