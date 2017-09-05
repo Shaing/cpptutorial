@@ -1,61 +1,117 @@
-#include "main.h"
 #include <iostream>
-#include <map>
 #include <string>
+#include <memory>
+#include "main.h"
 
 using namespace std;
 
-class mem
+enum class WHICH : unsigned int
 {
-public:
-    mem() : i(0), y(0){}
-    int i;
-    int y;
+    B = 1,
+    C,
+    D,
+    E,
 };
 
-class FOO
+class A
 {
 public:
-    FOO() : i(100){}
-
-    void set(const int& I)
-    { 
-        cout << "lI:" << I << endl;
-        cout << "&I:" << &I << endl;
-        i = I; 
-        cout << "set::i:" << i << endl;
-        cout << "set::&i:" << &i << endl;
-    }
-
-    void set(const int&& I)
-    { 
-
-        cout << "rI:" << I << endl;
-        cout << "&I:" << &I << endl;
-        i = I; 
-        cout << "set::i:" << i << endl;
-        cout << "set::&i:" << &i << endl;
-    }
-    const int& get(){ return i; }
+    A() : setting("pure"){ cout << "a ctor: " << setting << endl; }
+    ~A(){}
+    virtual void set(const string& str){ setting = str; }
+    virtual void scan()=0;
+    virtual const string& get(){ return setting; }
 
 private:
-    int i;
+    string setting;
 };
 
-int& get()
+class Ai
 {
-    //cout << i << endl;
-    static int i = 9;
-    cout << "31 get()::i: " << i << endl;
-    cout << "32 get()::&i: " << &i << endl;
-    return ++i;
-}
+public:
+    Ai(){}
+    ~Ai(){}
+    virtual void set(const string& str){ setting = str; }
+    virtual void scan(){ cout << "class Ai scan" << endl; }
+    virtual const string& get(){ return setting; }
 
-void coutVal(const auto& x)
+private:
+    string setting;
+};
+
+class B : public A
 {
-    cout << x << endl;
-}
+public:
+    void scan() override
+    {
+        set("B of A");
+        cout << "scan by: " << get() << endl;
+    }
+};
 
+class Bi : public Ai
+{
+public:
+    Bi(){ cout << "Class Bi ctor" << endl; }
+};
+
+class Bc
+{
+public:
+    Bc()
+    { 
+       cout << "Class Bc ctor" << endl;
+       Ai().scan();
+    }
+private:
+    //Ai ai;
+};
+
+class C : public A
+{
+public:
+    void scan() override
+    {
+        set("C of A");
+        cout << "scan by: " << get() << endl;
+    }
+};
+
+class Ci : public Ai
+{
+public:
+    Ci(){ cout << "Class Ci ctor" << endl; }
+};
+
+class D : public A
+{
+public:
+    void scan() override
+    {
+        set("D of A");
+        cout << "scan by: " << get() << endl;
+    }
+};
+
+A* CREATE(const WHICH& which)
+{
+    switch(which)
+    {
+        case WHICH::B:
+            return new B();
+            break;
+        case WHICH::C:
+            return new C();
+            break;
+        case WHICH::D:
+            return new D();
+            break;
+        default:
+            cout << "nullptr!" << endl;
+            return nullptr;
+            break;
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -63,107 +119,28 @@ int main(int argc, char* argv[])
     std::cout << TITLE << "\t\t";
     std::cout << "Built Time/Date: " << __TIME__ << " / " << __DATE__ << std::endl;;
     std::cout << "=======================================================================" << std::endl;
-/*
-    map<string, string> m;
 
-    cout << "m size:" << m.size() << endl;
-    m["MN"] = "";    
-    cout << "m size:" << m.size() << endl;
-    m["FW"] = "H";    
-    cout << "m size:" << m.size() << endl;
-
-    cout << "MN: " << m["MN"] << endl;
-    m["MN"] = "HUANG";
-    cout << "MN: " << m["MN"] << endl;
-    cout << "m size:" << m.size() << endl;
-
-    m["SN"] = "123";
-    cout << "m size:" << m.size() << endl;
-    m["SN"] = "456";
-    cout << "m size:" << m.size() << endl;
-*/
-    FOO f;
-    const int val = 1000; // rvalue
-    const int* pavl = &val;
-    cout << "&val:" << &val << endl;
-    f.set(*pavl);
-    f.set(19999);
-    int i1 = f.get();
-    cout << "i1: " << i1 << endl;
-
-    int i = 0;
-    cout << "&i: " << &i << endl;
-
-    i = get(); 
-    cout << "get(): " << get() << endl;
-    cout << "&get(): " << &get() << endl;
-    cout << "i: " << i << endl;
-    cout << "75 &i: " << &i << endl;
-
-    get() = 666;
-    cout << "78 get(): " << get() << endl;
-
-
-    //val = 1001;
-    cout << val << endl;
-    cout << "i1: " << i1 << endl;
-
-    int ti = 999;
-    cout << "&ti:" << &ti << endl;
-    int &tri = ti;
-
-    cout << "tri:" << tri << endl;
-    cout << "&tri:" << &tri << endl;
-
-    ti = 1999;
-    cout << "tri:" << tri << endl;
-    
-
-
-   // int x = 255;
-   // char cx = x;
-   // unsigned char ucx = x;
-   // signed char scx = x;
-   // printf("%d\n", cx);
-   // printf("%d\n", ucx);
-   // printf("%d\n", scx);
-
-    int &iii = ti;
-    int *i4 = &iii;
-    cout << iii << endl;
-    cout << *i4 << endl;
-
-    iii = i;
-    cout << "120 iii: " << iii << endl;
-    cout << "121 &iii: " << &iii << endl;
-    cout << "122 ti: " << ti << endl;
-    
-    i4 = &i;
-    cout << "125 i4: " << *i4 << endl;
-
-
-    mem m;
-
-    cout << "m.i &:" << &m.i << endl;
-    cout << "m.y &" << &m.y << endl;
-
-    const int &cri = 1;
-    coutVal(cri);
-
-    string s{"allen shaing"};
-    coutVal(s);
-
-    int &&rri = 111; // refernce rvalue
-    coutVal(rri);
-    cout << &rri << endl;
-
-    int pri = 111; // copy temp
-    int &ri = pri; // refernce lvalue
-    coutVal(ri);
-
-
-
-
+    // poly
+    cout << "below is poly:" << endl;
+    auto in = 1;
+    while(in)
+    {
+        cin >> in;
+        unique_ptr<A> a(CREATE(WHICH(in)));
+        if(a != nullptr)
+            a->scan();
+    }
+    cout << "\n";
+    // inher
+    cout << "below is inher:" << endl;
+    //Bi bi;
+    //bi.scan();
+    Bi().scan();
+    Ci().scan();
+    cout << "\n";
+    //composition
+    cout << "below is composition:" << endl;
+    Bc bc;
 
     return 0;
 }
