@@ -138,8 +138,8 @@ int main(int argc, char* argv[])
     Bi().scan();
     Ci().scan();
     cout << "\n";
-    //composition
-    cout << "below is composition:" << endl;
+    //Aggregation
+    cout << "below is Aggregation:" << endl;
     Bc bc;
 
     return 0;

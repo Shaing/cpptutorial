@@ -3,4 +3,4 @@
 - class enum
 - Polymorphism
 - inherent
-- composition
+- Aggregation
