@@ -2,5 +2,6 @@
 
 - class enum
 - Polymorphism
-- inherent
+- Inheritance
 - Aggregation
+- Composition

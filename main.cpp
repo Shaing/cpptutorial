@@ -55,7 +55,7 @@ public:
     Bi(){ cout << "Class Bi ctor" << endl; }
 };
 
-class Bc
+class Bc //Aggregation example 
 {
 public:
     Bc()
@@ -92,6 +92,27 @@ public:
         cout << "scan by: " << get() << endl;
     }
 };
+
+class SWTEAM
+{
+public:
+    SWTEAM(){ cout << "Here is SW department." << endl; }
+};
+
+class SWEnginner
+{
+public:
+    SWEnginner(SWTEAM* st) : sw(nullptr)
+    {
+        sw = st; 
+        cout << "I'm Allen H." << endl; 
+    }
+    ~SWEnginner(){ delete sw; }
+private:
+    SWTEAM* sw;
+};
+
+
 
 A* CREATE(const WHICH& which)
 {
@@ -141,6 +162,11 @@ int main(int argc, char* argv[])
     //Aggregation
     cout << "below is Aggregation:" << endl;
     Bc bc;
+    cout << "\n";
+
+    //Composition
+    cout << "below is Composition:" << endl;
+    SWEnginner allen(new SWTEAM()); 
 
     return 0;
 }
